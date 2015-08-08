@@ -1,0 +1,7 @@
+blog_backend Changelog
+=====================
+
+0.0
+---
+
+-  Initial version
