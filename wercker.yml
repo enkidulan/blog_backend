@@ -36,9 +36,6 @@ deploy:
         sed -ri s/version=\'[v\.0-9\-]+.\'/version=\'$TAGNAME\'/g setup.py
         git commit -a -m "Prepare version $TAGNAME [ci skip]"
         mkrelease -C -d $enki_dist_url
-  - add-ssh-key:
-      keyname: enkid_dist_ssh
-      host: github.com
   - script:
       name: pushing relese back to repo
       code: |
