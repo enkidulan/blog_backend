@@ -7,7 +7,7 @@ build:
     - script:
         name: installing dependensies
         code: |
-          easy_install setuptools
+          easy_install setuptools==18.1
           pip install nose
           python setup.py install
 
