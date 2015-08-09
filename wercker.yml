@@ -7,7 +7,7 @@ build:
     - script:
         name: installing dependensies
         code: |
-          pip install setuptools --upgrade
+          easy_install setuptools
           pip install nose
           python setup.py install
 
