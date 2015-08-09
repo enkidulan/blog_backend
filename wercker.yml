@@ -26,6 +26,6 @@ deploy:
       name: release to dist
       code: |
         pip install jarn.mkrelease
-        pwd
-        ls
+        git config --global user.email "enkidulan@gmail.com"
+        git config --global user.name "wercker builder"
         mkrelease -d $enki_dist_url
