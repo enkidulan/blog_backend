@@ -5,10 +5,11 @@ build:
   steps:
 
     - script:
-        name: python unit test
+        name: installing dependensies
         code: |
-          python setup.py install
+          pip install setuptools --upgrade
           pip install nose
+          python setup.py install
 
     - script:
         name: python unit test
