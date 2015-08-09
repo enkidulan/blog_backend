@@ -18,6 +18,7 @@ deploy:
   enki_dist:
   - add-ssh-key:
       keyname: enkid_dist_ssh
+      host: $hostname
   - add-to-known_hosts:
         hostname: $hostname
         # fingerprint: ce:83:e9:7d:02:a4:e3:63:3f:8a:07:cc:d5:d9:bb:cd
