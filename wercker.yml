@@ -3,15 +3,28 @@ box: python
 
 build:
   steps:
-
     - script:
         name: installing dependensies
         code: |
           easy_install setuptools==18.1
           pip install nose
           python setup.py install
-
     - script:
         name: python unit test
         code: |
           nosetests
+
+deploy:
+  enki_dist:
+  - add-to-known_hosts:
+        hostname: $hostname
+        # fingerprint: ce:83:e9:7d:02:a4:e3:63:3f:8a:07:cc:d5:d9:bb:cd
+  - add-ssh-key:
+      keyname: enkid_dist_ssh
+  - script:
+      name: release to dist
+      code: |
+        pip install jarn.mkrelease
+        pwd
+        ls
+        mkrelease -d $enki_dist_url
