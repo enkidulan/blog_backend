@@ -39,5 +39,6 @@ deploy:
   - script:
       name: pushing relese back to repo
       code: |
+        git remote show origin
         git push origin master
         git push origin master --tags
