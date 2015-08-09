@@ -1,0 +1,16 @@
+# The container definition we want to use for developing our app
+box: python
+
+build:
+  steps:
+
+    - script:
+        name: python unit test
+        code: |
+          python setup.py install
+          pip install nose
+
+    - script:
+        name: python unit test
+        code: |
+          nosetests
