@@ -48,8 +48,8 @@ deploy:
   - script:
       name: updating build config
       code: |
-        git clone git@github.com:enkidulan/pyramid_boilerplate.git build
-        cd build
+        git clone git@github.com:enkidulan/pyramid_boilerplate.git blog_build
+        cd blog_build
         git checkout blog
         sed -ri "s/blog-backend = [\.0-9\-]+/blog-backend = $TAGNAME/" profiles/versions.cfg
         git commit -m "Updated blog-backend version to $TAGNAME" profiles/versions.cfg
