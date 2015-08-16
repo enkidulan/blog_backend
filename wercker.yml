@@ -45,6 +45,9 @@ deploy:
         git push origin master
         mkrelease -C -d $enki_dist_url
         git push origin master --tags
+  - add-ssh-key:
+      keyname: build_update_key
+      host: github.com
   - script:
       name: updating build config
       code: |
