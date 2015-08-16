@@ -1,0 +1,45 @@
+# The container definition we want to use for developing our app
+box: python
+
+build:
+  steps:
+    - script:
+        name: installing dependensies
+        code: |
+          easy_install setuptools==18.1
+          pip install nose
+          python setup.py install
+    - script:
+        name: python unit test
+        code: |
+          nosetests
+
+deploy:
+  enki_dist:
+  - add-ssh-key:
+      keyname: enkid_dist_ssh
+      host: $hostname
+  - add-to-known_hosts:
+        hostname: $hostname
+        # fingerprint: ce:83:e9:7d:02:a4:e3:63:3f:8a:07:cc:d5:d9:bb:cd
+  - script:
+      name: installing dependensies
+      code: |
+        pip install jarn.mkrelease
+        git config --global user.email "enkidulan@gmail.com"
+        git config --global user.name "wercker builder"
+        git config --global push.default simple
+  - add-ssh-key:
+      keyname: enkid_dist_ssh
+      host: github.com
+  - add-to-known_hosts:
+        hostname: github.com
+  - script:
+      name: releasing to dist
+      code: |
+        TAGNAME=`date +"v1.0.%Y%m%d%H%M"`
+        sed -ri s/version=\'v[\.0-9\-]+\'/version=\'$TAGNAME\'/g setup.py
+        git commit -m "Prepare version $TAGNAME [ci skip]" setup.py
+        git push origin master
+        mkrelease -C -d $enki_dist_url
+        git push origin master --tags
