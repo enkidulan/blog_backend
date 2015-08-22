@@ -4,7 +4,9 @@ from substanced.sdi import mgmt_view
 from substanced.form import FormView
 from substanced.interfaces import IFolder
 
-from .resources import DocumentSchema
+from .resources.document import DocumentSchema
+from .resources.collection import CollectionSchema
+
 
 #
 #   SDI "add" view for documents
@@ -24,8 +26,34 @@ class AddDocumentView(FormView):
 
     def add_success(self, appstruct):
         registry = self.request.registry
-        name = appstruct.pop('name')
+        name = appstruct['title']
         document = registry.content.create('Document', **appstruct)
+        self.context[name] = document
+        return HTTPFound(
+            self.request.sdiapi.mgmt_path(self.context, '@@contents')
+            )
+
+
+#
+#   SDI "add" view for collection
+#
+@mgmt_view(
+    context=IFolder,
+    name='add_collection',
+    tab_title='Add Collection',
+    permission='sdi.add-content',
+    renderer='substanced.sdi:templates/form.pt',
+    tab_condition=False,
+    )
+class AddCollectionView(FormView):
+    title = 'Add Collection'
+    schema = CollectionSchema()
+    buttons = ('add',)
+
+    def add_success(self, appstruct):
+        registry = self.request.registry
+        name = appstruct['title']
+        document = registry.content.create('Collection', **appstruct)
         self.context[name] = document
         return HTTPFound(
             self.request.sdiapi.mgmt_path(self.context, '@@contents')

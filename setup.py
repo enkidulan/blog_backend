@@ -12,6 +12,7 @@ requires = [
     'waitress',
     'substanced',
     'pyramid_tm',
+    'arrow'
     ]
 
 setup(name='blog_backend',
