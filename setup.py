@@ -16,7 +16,7 @@ requires = [
     ]
 
 setup(name='blog_backend',
-      version='v1.0.201508100316',
+      version='1.0.201508220634',
       description='blog_backend',
       long_description=README + '\n\n' +  CHANGES,
       classifiers=[
