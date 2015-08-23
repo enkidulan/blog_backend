@@ -21,7 +21,7 @@ class CollectionSchema(Schema):
         colander.String(),
         widget=deform.widget.RichTextWidget()
         )
-    content_type = colander.SchemaNode(
+    target_content_type = colander.SchemaNode(
        colander.String(),
        )
     path = colander.SchemaNode(
