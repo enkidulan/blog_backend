@@ -22,7 +22,12 @@ def now_default(node, kw):
     return datetime.datetime.now()
 
 
-class DocumentSchema(Schema):
+@colander.deferred
+def get_author_name(node, kw):
+    return kw['request'].authenticated_userid
+
+
+class BaseDocumentSchema(Schema):
 
     title = colander.SchemaNode(
         colander.String(),
@@ -45,21 +50,32 @@ class MetadataSchema(Schema):
 
     keywords = colander.SchemaNode(
         colander.String(),
+        default=tuple(),
         )
     author = colander.SchemaNode(
         colander.String(),
+        default=get_author_name,
         )
     short_description = colander.SchemaNode(
         colander.String(),
+        default='',
         )
 
 
-class MetadataPropertySheet(PropertySheet):
-    schema = MetadataSchema()
+class DocumentSchema(BaseDocumentSchema, MetadataSchema):
 
+    @staticmethod
+    def propertysheets():
+        class MetadataPropertySheet(PropertySheet):
+            schema = MetadataSchema()
 
-class DocumentPropertySheet(PropertySheet):
-    schema = DocumentSchema()
+        class DocumentPropertySheet(PropertySheet):
+            schema = BaseDocumentSchema()
+
+        return (
+            ('Basic', DocumentPropertySheet),
+            ('Metadata', MetadataPropertySheet),
+        )
 
 
 @content(
@@ -67,10 +83,7 @@ class DocumentPropertySheet(PropertySheet):
     icon='glyphicon glyphicon-align-left',
     add_view='add_document',
     catalog=True,
-    propertysheets=(
-        ('Basic', DocumentPropertySheet),
-        ('Metadata', MetadataPropertySheet),
-    ),
+    propertysheets=DocumentSchema.propertysheets()
 )
 class Document(Persistent):
 
