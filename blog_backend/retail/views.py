@@ -40,6 +40,9 @@ class DocumetView(BaseJSONYView):
 class CollectionView(BaseJSONYView):
 
     def response(self):
+        page = int(self.request.params.get('page') or 0)
+        description_only = self.request.params.get('description_only', False)
+
         catalog = find_catalog(self.context, 'system')
         content_type = catalog['content_type']
         query = content_type.eq(self.context.target_content_type)
@@ -50,10 +53,19 @@ class CollectionView(BaseJSONYView):
         resultset.sort(
             key=attrgetter(self.context.sort_field),
             reverse=self.context.sort_inverse)
-        resultset = [str(render_view(e, self.request)) for e in resultset]
+        if description_only:
+            resultset = [
+                {'title': e.title,
+                 'name': e.name,
+                 'description': e.short_description}
+                for e in resultset]
+        else:
+            resultset = [str(render_view(e, self.request)) for e in resultset]
+        page_to_show = slice(page, page + self.context.total_results or None)
         return {
             'title': self.context.title,
             'text': self.context.text,
-            'items': resultset[:self.context.total_results or None],
+            'items': resultset[page_to_show],
+            'page': page,
+            'pages': len(resultset),
         }
-
