@@ -7,6 +7,7 @@ from ..resources.collection import Collection
 # from pyramid.traversal import resource_path
 from substanced.util import find_catalog
 from operator import attrgetter
+from substanced.principal import DefaultUserLocator
 
 
 class BaseJSONYView():
@@ -25,13 +26,16 @@ class BaseJSONYView():
 class DocumetView(BaseJSONYView):
 
     def response(self):
+        # import pdb; pdb.set_trace()
+        adapter = DefaultUserLocator(self.context, self.request)
+        user = adapter.get_user_by_userid(int(self.context.author))
         return {
             'title': self.context.title,
             'description': self.context.description,
             'text': self.context.text,
             'pubdate': self.context.pubdate.strftime('%Y-%m-%d %H:%M:%S'),
             'keywords': self.context.keywords,
-            'author': self.context.author,
+            'author': user.name,
             'short_description': self.context.short_description,
         }
 
@@ -59,9 +63,10 @@ class CollectionView(BaseJSONYView):
                  'name': e.name,
                  'description': e.short_description}
                 for e in resultset]
+            page_to_show = slice(None)
         else:
             resultset = [str(render_view(e, self.request)) for e in resultset]
-        page_to_show = slice(page, page + self.context.total_results or None)
+            page_to_show = slice(page, page + self.context.total_results or None)
         return {
             'title': self.context.title,
             'text': self.context.text,
